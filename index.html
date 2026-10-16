@@ -1,347 +1,1189 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fund Ledger</title>
+<title>Fund Collector</title>
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
-:root{--bg:#f3f6f5;--card:#fff;--ink:#12302c;--mute:#5d7570;--line:#d8e2df;--accent:#0f766e;--accent-ink:#fff;--warn:#b45309;--warn-bg:#fdf0dc;--ok-bg:#dcf3ee;--bad:#b42318;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--card:#162623;--ink:#e6f2ef;--mute:#8fa8a2;--line:#27403b;--accent:#2dd4bf;--accent-ink:#06201c;--warn:#fbbf24;--warn-bg:#3a2d10;--ok-bg:#12403a;--bad:#f87171}}
-:root[data-theme="dark"]{--bg:#0e1a18;--card:#162623;--ink:#e6f2ef;--mute:#8fa8a2;--line:#27403b;--accent:#2dd4bf;--accent-ink:#06201c;--warn:#fbbf24;--warn-bg:#3a2d10;--ok-bg:#12403a;--bad:#f87171}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:560px;margin:0 auto;padding:16px}
-input,button{font:inherit;color:inherit}
-input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
-input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:9px 14px}
-button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
-button.danger{color:var(--bad)}
-label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
-.title{font-size:24px;font-weight:700;border:0;background:transparent;padding:4px 0;border-bottom:1px dashed var(--line);border-radius:0}
-.row{display:flex;gap:8px;align-items:flex-end}
-.row>*{flex:1;min-width:0}.row>button{flex:0 0 auto}
-.totals{margin:16px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-.big{font-size:34px;font-weight:700;letter-spacing:-.5px}
-.big small{font-size:16px;font-weight:500;color:var(--mute)}
-.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0}
-.bar i{display:block;height:100%;background:var(--accent)}
-.stats{display:flex;gap:16px;font-size:14px;color:var(--mute);flex-wrap:wrap}
-.stats b{color:var(--ink)}
-.member{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
-.mhead{width:100%;display:flex;justify-content:space-between;gap:8px;align-items:center;border:0;border-radius:0;padding:12px 14px;text-align:left;background:transparent}
-.name{font-weight:700;overflow-wrap:anywhere}
-.sub{font-size:13px;color:var(--mute)}
-.chip{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
-.chip.ok{background:var(--ok-bg);color:var(--accent)}.chip.part{background:var(--warn-bg);color:var(--warn)}.chip.none{background:var(--line);color:var(--mute)}
-.mbody{padding:0 14px 14px;border-top:1px solid var(--line)}
-.pay{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
-.pay button{padding:4px 10px;font-size:13px}
-.empty{text-align:center;color:var(--mute);padding:28px 8px}
-.tools{display:flex;gap:8px;margin:16px 0 0;flex-wrap:wrap}
-.toast{min-height:20px;font-size:13px;color:var(--mute);margin-top:8px}
-h2{font-size:16px;margin:20px 0 8px}
-textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);resize:vertical}
-textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-input[type=radio]{width:auto;margin:4px 0 0;accent-color:var(--accent)}
-label.opt{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:8px;padding:10px 12px;margin:8px 0 0;cursor:pointer}
-label.opt:has(input:checked){border-color:var(--accent)}
+:root{
+  --bg:#f3f6f5;
+  --card:#fff;
+  --ink:#12302c;
+  --mute:#5d7570;
+  --line:#d8e2df;
+  --accent:#0f766e;
+  --accent-ink:#fff;
+  --warn:#b45309;
+  --warn-bg:#fdf0dc;
+  --ok-bg:#dcf3ee;
+  --bad:#b42318;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1a18;
+    --card:#162623;
+    --ink:#e6f2ef;
+    --mute:#8fa8a2;
+    --line:#27403b;
+    --accent:#2dd4bf;
+    --accent-ink:#06201c;
+    --warn:#fbbf24;
+    --warn-bg:#3a2d10;
+    --ok-bg:#12403a;
+    --bad:#f87171;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0e1a18;
+  --card:#162623;
+  --ink:#e6f2ef;
+  --mute:#8fa8a2;
+  --line:#27403b;
+  --accent:#2dd4bf;
+  --accent-ink:#06201c;
+  --warn:#fbbf24;
+  --warn-bg:#3a2d10;
+  --ok-bg:#12403a;
+  --bad:#f87171;
+}
+
+html{
+  scroll-padding-top:env(safe-area-inset-top,0px);
+}
+
+*,*::before,*::after{
+  box-sizing:inherit;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.45 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+main{
+  max-width:560px;
+  margin:0 auto;
+  padding:16px;
+}
+
+input,button{
+  font:inherit;
+  color:inherit;
+}
+
+input{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+}
+
+input:focus-visible,button:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+button{
+  cursor:pointer;
+  border:1px solid var(--line);
+  background:var(--card);
+  border-radius:8px;
+  padding:9px 14px;
+}
+
+button.primary{
+  background:var(--accent);
+  color:var(--accent-ink);
+  border-color:var(--accent);
+  font-weight:700;
+}
+
+button.danger{
+  color:var(--bad);
+}
+
+label{
+  display:block;
+  font-size:13px;
+  color:var(--mute);
+  margin-bottom:4px;
+}
+
+.title{
+  font-size:24px;
+  font-weight:700;
+  border:0;
+  background:transparent;
+  padding:4px 0;
+  border-bottom:1px dashed var(--line);
+  border-radius:0;
+}
+
+.row{
+  display:flex;
+  gap:8px;
+  align-items:flex-end;
+}
+
+.row>*{
+  flex:1;
+  min-width:0;
+}
+
+.row>button{
+  flex:0 0 auto;
+}
+
+.totals{
+  margin:16px 0;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px;
+}
+
+.big{
+  font-size:34px;
+  font-weight:700;
+  letter-spacing:-.5px;
+}
+
+.big small{
+  font-size:16px;
+  font-weight:500;
+  color:var(--mute);
+}
+
+.bar{
+  height:8px;
+  background:var(--line);
+  border-radius:99px;
+  overflow:hidden;
+  margin:8px 0;
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  background:var(--accent);
+}
+
+.stats{
+  display:flex;
+  gap:16px;
+  font-size:14px;
+  color:var(--mute);
+  flex-wrap:wrap;
+}
+
+.stats b{
+  color:var(--ink);
+}
+
+.member{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin-bottom:10px;
+  overflow:hidden;
+}
+
+.mhead{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+  border:0;
+  border-radius:0;
+  padding:12px 14px;
+  text-align:left;
+  background:transparent;
+}
+
+.name{
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+
+.sub{
+  font-size:13px;
+  color:var(--mute);
+}
+
+.chip{
+  font-size:12px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:99px;
+  white-space:nowrap;
+}
+
+.chip.ok{
+  background:var(--ok-bg);
+  color:var(--accent);
+}
+
+.chip.part{
+  background:var(--warn-bg);
+  color:var(--warn);
+}
+
+.chip.none{
+  background:var(--line);
+  color:var(--mute);
+}
+
+.mbody{
+  padding:0 14px 14px;
+  border-top:1px solid var(--line);
+}
+
+.pay{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:8px 0;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+
+.pay button{
+  padding:4px 10px;
+  font-size:13px;
+}
+
+.empty{
+  text-align:center;
+  color:var(--mute);
+  padding:28px 8px;
+}
+
+.tools{
+  display:flex;
+  gap:8px;
+  margin:16px 0 0;
+  flex-wrap:wrap;
+}
+
+.toast{
+  min-height:20px;
+  font-size:13px;
+  color:var(--mute);
+  margin-top:8px;
+}
+
+h2{
+  font-size:16px;
+  margin:20px 0 8px;
+}
+
+textarea{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+  font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--ink);
+  resize:vertical;
+}
+
+textarea:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+input[type=radio]{
+  width:auto;
+  margin:4px 0 0;
+  accent-color:var(--accent);
+}
+
+label.opt{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  font-size:15px;
+  color:var(--ink);
+  border:1px solid var(--line);
+  background:var(--card);
+  border-radius:8px;
+  padding:10px 12px;
+  margin:8px 0 0;
+  cursor:pointer;
+}
+
+label.opt:has(input:checked){
+  border-color:var(--accent);
+}
 </style>
 </head>
+
 <body>
 <main>
-  <input id="tname" class="title" aria-label="Tour name" maxlength="60">
+
+  <input
+    id="tname"
+    class="title"
+    aria-label="Fund name"
+    maxlength="60"
+    value="Fund Collector"
+  >
+
   <div class="row" style="margin-top:12px">
-    <div><label for="perhead">Amount per person (₹)</label><input id="perhead" type="number" inputmode="decimal" min="0" step="any"></div>
+    <div>
+      <label for="perhead">Amount per person (₹)</label>
+      <input id="perhead" type="number" inputmode="decimal" min="0" step="any">
+    </div>
   </div>
+
   <section class="totals" id="totals" aria-live="polite"></section>
 
   <h2>Add member</h2>
+
   <div class="row">
-    <div><label for="newname">Name</label><input id="newname" maxlength="60" autocomplete="off"></div>
+    <div>
+      <label for="newname">Name</label>
+      <input id="newname" maxlength="60" autocomplete="off">
+    </div>
     <button class="primary" id="addm">Add</button>
   </div>
 
   <h2>Members</h2>
   <div id="list"></div>
 
-  <div class="tools"><button id="showjson" aria-expanded="false" aria-controls="jsonbox">Show JSON</button></div>
+  <div class="tools">
+    <button id="showjson" aria-expanded="false" aria-controls="jsonbox">
+      Show JSON
+    </button>
+  </div>
+
   <div id="jsonbox" hidden>
-  <h2>Import / Export (JSON)</h2>
-  <label for="json">Paste JSON</label>
-  <textarea id="json" rows="6" spellcheck="false" placeholder='{"members":[{"name":"Amit","payments":[{"amount":2000}]}]}'></textarea>
-  <div style="margin-top:8px"><label for="file">...or choose a .json file</label><input id="file" type="file" accept=".json,application/json"></div>
-  <div role="radiogroup" aria-label="Import mode">
-    <label class="opt"><input type="radio" name="mode" value="add" checked><span><b>Add new</b><br><span class="sub">Keep the current list and add the imported members and payments</span></span></label>
-    <label class="opt"><input type="radio" name="mode" value="replace"><span><b>Remove all and add new</b><br><span class="sub">Delete the current list first, then import</span></span></label>
-  </div>
-  <div class="tools" style="margin-top:10px">
-    <button class="primary" id="imp">Import</button>
-    <button id="sample">Fill sample</button>
-    <button id="exp">Show current as JSON text</button>
-  </div>
+    <h2>Import / Export (JSON)</h2>
+
+    <label for="json">Paste JSON</label>
+    <textarea
+      id="json"
+      rows="6"
+      spellcheck="false"
+      placeholder='{"members":[{"name":"Amit","payments":[{"amount":2000}]}]}'
+    ></textarea>
+
+    <div style="margin-top:8px">
+      <label for="file">...or choose a .json file</label>
+      <input id="file" type="file" accept=".json,application/json">
+    </div>
+
+    <div role="radiogroup" aria-label="Import mode">
+      <label class="opt">
+        <input type="radio" name="mode" value="add" checked>
+        <span>
+          <b>Add new</b><br>
+          <span class="sub">Keep the current list and add the imported members and payments</span>
+        </span>
+      </label>
+
+      <label class="opt">
+        <input type="radio" name="mode" value="replace">
+        <span>
+          <b>Remove all and add new</b><br>
+          <span class="sub">Delete the current list first, then import</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="tools" style="margin-top:10px">
+      <button class="primary" id="imp">Import</button>
+      <button id="sample">Fill sample</button>
+      <button id="exp">Show current as JSON text</button>
+    </div>
   </div>
 
   <div class="tools">
     <button id="copy">Copy summary</button>
     <button id="reset" class="danger">Clear all data</button>
   </div>
+
   <div class="toast" id="toast" role="status"></div>
 </main>
+
 <script>
 (function(){
 "use strict";
-var KEY="tour-ledger-v1";
-var S=load(), open=null, armed=null;
+
+var KEY = "tour-ledger-v1";
+var S = load();
+var open = null;
+var armed = null;
 
 function load(){
   try{
-    var r=localStorage.getItem(KEY);
-    if(r){var d=JSON.parse(r);
-      if(d&&Array.isArray(d.members)){
-        d.name=String(d.name||"Tour fund");
-        d.perHead=Number.isFinite(d.perHead)?d.perHead:0;
-        d.members=d.members.filter(function(m){return m&&typeof m.name==="string"}).map(function(m){
-          m.id=m.id||uid();
-          m.payments=Array.isArray(m.payments)?m.payments.filter(function(p){return p&&Number.isFinite(p.amt)}):[];
-          return m;});
-        return d;}}
+    var r = localStorage.getItem(KEY);
+
+    if(r){
+      var d = JSON.parse(r);
+
+      if(d && Array.isArray(d.members)){
+        d.name = String(d.name || "Fund Collector");
+        d.perHead = Number.isFinite(d.perHead) ? d.perHead : 0;
+
+        d.members = d.members
+          .filter(function(m){
+            return m && typeof m.name === "string";
+          })
+          .map(function(m){
+            m.id = m.id || uid();
+            m.payments = Array.isArray(m.payments)
+              ? m.payments.filter(function(p){
+                  return p && Number.isFinite(p.amt);
+                })
+              : [];
+            return m;
+          });
+
+        return d;
+      }
+    }
   }catch(e){}
-  return {name:"Tour fund",perHead:0,members:[]};
+
+  return {
+    name:"Fund Collector",
+    perHead:0,
+    members:[]
+  };
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function uid(){return Math.random().toString(36).slice(2,10)}
-// Amounts are stored as integer paise to avoid float drift.
-function toP(v){var n=parseFloat(v);return Number.isFinite(n)&&n>0?Math.round(n*100):0}
+
+function save(){
+  try{
+    localStorage.setItem(KEY, JSON.stringify(S));
+  }catch(e){
+    toast("Could not save data in this browser.");
+  }
+}
+
+function uid(){
+  return Math.random().toString(36).slice(2,10);
+}
+
+// Amounts are stored as integer paise to avoid floating-point errors.
+function toP(v){
+  var n = parseFloat(v);
+  return Number.isFinite(n) && n > 0 ? Math.round(n * 100) : 0;
+}
+
 function fmt(p){
-  var neg=p<0; p=Math.abs(p);
-  return (neg?"-":"")+"₹"+(p/100).toLocaleString("en-IN",{minimumFractionDigits:p%100?2:0,maximumFractionDigits:2});
+  var neg = p < 0;
+  p = Math.abs(p);
+
+  return (neg ? "-" : "") + "₹" +
+    (p / 100).toLocaleString("en-IN", {
+      minimumFractionDigits:p % 100 ? 2 : 0,
+      maximumFractionDigits:2
+    });
 }
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function paid(m){return m.payments.reduce(function(a,p){return a+p.amt},0)}
-function today(){return new Date().toLocaleDateString("en-CA")}
-function $(id){return document.getElementById(id)}
-function toast(t){$("toast").textContent=t}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c];
+  });
+}
+
+function paid(m){
+  return m.payments.reduce(function(a,p){
+    return a + p.amt;
+  }, 0);
+}
+
+function today(){
+  var d = new Date();
+  var local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0,10);
+}
+
+function $(id){
+  return document.getElementById(id);
+}
+
+function toast(t){
+  $("toast").textContent = t;
+}
 
 function render(){
-  var head=S.perHead, n=S.members.length;
-  var collected=0, pending=0;
-  S.members.forEach(function(m){var p=paid(m);collected+=p;pending+=Math.max(0,head-p)});
-  var expected=head*n, pct=expected>0?Math.min(100,Math.round(collected/expected*100)):0;
-  $("totals").innerHTML=
-    '<div class="big">'+fmt(collected)+' <small>of '+fmt(expected)+'</small></div>'+
-    '<div class="bar" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"><i style="width:'+pct+'%"></i></div>'+
-    '<div class="stats"><span>Pending <b>'+fmt(pending)+'</b></span><span>Members <b>'+n+'</b></span><span>Fully paid <b>'+
-    S.members.filter(function(m){return head>0&&paid(m)>=head}).length+'</b></span></div>';
+  var head = S.perHead;
+  var n = S.members.length;
+  var collected = 0;
+  var pending = 0;
 
-  if(!n){$("list").innerHTML='<div class="empty">No members yet. Add the first person above.</div>';return}
-  $("list").innerHTML=S.members.map(function(m){
-    var p=paid(m), due=Math.max(0,head-p);
-    var st=head>0&&p>=head?["ok","Paid"]:p>0?["part","Partial"]:["none","Unpaid"];
-    var h='<div class="member"><button class="mhead" data-act="toggle" data-id="'+m.id+'" aria-expanded="'+(open===m.id)+'">'+
-      '<span><span class="name">'+esc(m.name)+'</span><br><span class="sub">'+fmt(p)+' paid'+(head>0?' · '+fmt(due)+' due':'')+'</span></span>'+
-      '<span class="chip '+st[0]+'">'+st[1]+'</span></button>';
-    if(open===m.id){
-      h+='<div class="mbody"><h2>Record payment</h2><div class="row">'+
-        '<div><label for="amt">Amount (₹)</label><input id="amt" type="number" inputmode="decimal" min="0" step="any"></div>'+
-        '<div><label for="dt">Date</label><input id="dt" type="date" value="'+today()+'"></div></div>'+
-        '<div class="row" style="margin-top:8px"><div><label for="note">Note (optional)</label><input id="note" maxlength="80"></div>'+
-        '<button class="primary" data-act="pay" data-id="'+m.id+'">Save</button></div>'+
-        (due>0?'<button style="margin-top:8px" data-act="fill" data-due="'+due+'">Fill remaining '+fmt(due)+'</button>':'')+
-        '<h2>History</h2>'+
-        (m.payments.length?m.payments.slice().reverse().map(function(x){
-          return '<div class="pay"><span><b>'+fmt(x.amt)+'</b> <span class="sub">'+esc(x.date||"")+(x.note?' · '+esc(x.note):'')+'</span></span>'+
-            '<button data-act="delpay" data-id="'+m.id+'" data-pid="'+x.id+'">Delete</button></div>'}).join(""):'<div class="sub">No payments yet.</div>')+
-        '<div style="margin-top:12px"><button class="danger" data-act="delm" data-id="'+m.id+'">'+(armed===m.id?"Tap again to remove":"Remove member")+'</button></div></div>';
+  S.members.forEach(function(m){
+    var p = paid(m);
+    collected += p;
+    pending += Math.max(0, head - p);
+  });
+
+  var expected = head * n;
+  var pct = expected > 0
+    ? Math.min(100, Math.round(collected / expected * 100))
+    : 0;
+
+  $("totals").innerHTML =
+    '<div class="big">' + fmt(collected) +
+    ' <small>of ' + fmt(expected) + '</small></div>' +
+    '<div class="bar" role="progressbar" aria-valuenow="' +
+    pct + '" aria-valuemin="0" aria-valuemax="100">' +
+    '<i style="width:' + pct + '%"></i></div>' +
+    '<div class="stats">' +
+    '<span>Pending <b>' + fmt(pending) + '</b></span>' +
+    '<span>Members <b>' + n + '</b></span>' +
+    '<span>Fully paid <b>' +
+    S.members.filter(function(m){
+      return head > 0 && paid(m) >= head;
+    }).length +
+    '</b></span></div>';
+
+  if(!n){
+    $("list").innerHTML =
+      '<div class="empty">No members yet. Add the first person above.</div>';
+    return;
+  }
+
+  $("list").innerHTML = S.members.map(function(m){
+    var p = paid(m);
+    var due = Math.max(0, head - p);
+
+    var st = head > 0 && p >= head
+      ? ["ok","Paid"]
+      : p > 0
+        ? ["part","Partial"]
+        : ["none","Unpaid"];
+
+    var h =
+      '<div class="member">' +
+      '<button class="mhead" data-act="toggle" data-id="' +
+      esc(m.id) + '" aria-expanded="' + (open === m.id) + '">' +
+      '<span><span class="name">' + esc(m.name) +
+      '</span><br><span class="sub">' + fmt(p) + ' paid' +
+      (head > 0 ? ' · ' + fmt(due) + ' due' : '') +
+      '</span></span>' +
+      '<span class="chip ' + st[0] + '">' + st[1] + '</span>' +
+      '</button>';
+
+    if(open === m.id){
+      h +=
+        '<div class="mbody">' +
+        '<h2>Record payment</h2>' +
+        '<div class="row">' +
+        '<div><label for="amt">Amount (₹)</label>' +
+        '<input id="amt" type="number" inputmode="decimal" min="0" step="any"></div>' +
+        '<div><label for="dt">Date</label>' +
+        '<input id="dt" type="date" value="' + today() + '"></div>' +
+        '</div>' +
+        '<div class="row" style="margin-top:8px">' +
+        '<div><label for="note">Note (optional)</label>' +
+        '<input id="note" maxlength="80"></div>' +
+        '<button class="primary" data-act="pay" data-id="' +
+        esc(m.id) + '">Save</button></div>' +
+
+        (due > 0
+          ? '<button style="margin-top:8px" data-act="fill" data-due="' +
+            due + '">Fill remaining ' + fmt(due) + '</button>'
+          : '') +
+
+        '<h2>History</h2>' +
+
+        (m.payments.length
+          ? m.payments.slice().reverse().map(function(x){
+              return '<div class="pay"><span><b>' +
+                fmt(x.amt) + '</b> <span class="sub">' +
+                esc(x.date || '') +
+                (x.note ? ' · ' + esc(x.note) : '') +
+                '</span></span>' +
+                '<button data-act="delpay" data-id="' +
+                esc(m.id) + '" data-pid="' +
+                esc(x.id || '') + '">Delete</button></div>';
+            }).join("")
+          : '<div class="sub">No payments yet.</div>') +
+
+        '<div style="margin-top:12px">' +
+        '<button class="danger" data-act="delm" data-id="' +
+        esc(m.id) + '">' +
+        (armed === m.id ? "Tap again to remove" : "Remove member") +
+        '</button></div></div>';
     }
-    return h+'</div>';
+
+    return h + '</div>';
   }).join("");
 }
 
-function find(id){return S.members.filter(function(m){return m.id===id})[0]}
+function find(id){
+  return S.members.filter(function(m){
+    return m.id === id;
+  })[0];
+}
 
-$("list").addEventListener("click",function(e){
-  var b=e.target.closest("button[data-act]"); if(!b)return;
-  var act=b.dataset.act, m=find(b.dataset.id);
-  if(act==="toggle"){open=open===b.dataset.id?null:b.dataset.id;armed=null;render();return}
-  if(act==="fill"){$("amt").value=(parseInt(b.dataset.due,10)/100).toString();return}
-  if(!m)return;
-  if(act==="pay"){
-    var a=toP($("amt").value);
-    if(!a){toast("Enter an amount greater than 0.");$("amt").focus();return}
-    m.payments.push({id:uid(),amt:a,date:$("dt").value||today(),note:$("note").value.trim()});
-    save();render();toast("Saved "+fmt(a)+" for "+m.name+".");
-  }else if(act==="delpay"){
-    m.payments=m.payments.filter(function(p){return p.id!==b.dataset.pid});
-    save();render();toast("Payment deleted.");
-  }else if(act==="delm"){
-    if(armed!==m.id){armed=m.id;render();return}
-    S.members=S.members.filter(function(x){return x.id!==m.id});
-    open=null;armed=null;save();render();toast("Member removed.");
+$("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-act]");
+  if(!b) return;
+
+  var act = b.dataset.act;
+  var m = find(b.dataset.id);
+
+  if(act === "toggle"){
+    open = open === b.dataset.id ? null : b.dataset.id;
+    armed = null;
+    render();
+    return;
+  }
+
+  if(act === "fill"){
+    $("amt").value = (parseInt(b.dataset.due,10) / 100).toString();
+    return;
+  }
+
+  if(!m) return;
+
+  if(act === "pay"){
+    var a = toP($("amt").value);
+
+    if(!a){
+      toast("Enter an amount greater than 0.");
+      $("amt").focus();
+      return;
+    }
+
+    m.payments.push({
+      id:uid(),
+      amt:a,
+      date:$("dt").value || today(),
+      note:$("note").value.trim()
+    });
+
+    save();
+    render();
+    toast("Saved " + fmt(a) + " for " + m.name + ".");
+
+  }else if(act === "delpay"){
+    m.payments = m.payments.filter(function(p){
+      return p.id !== b.dataset.pid;
+    });
+
+    save();
+    render();
+    toast("Payment deleted.");
+
+  }else if(act === "delm"){
+    if(armed !== m.id){
+      armed = m.id;
+      render();
+      return;
+    }
+
+    S.members = S.members.filter(function(x){
+      return x.id !== m.id;
+    });
+
+    open = null;
+    armed = null;
+    save();
+    render();
+    toast("Member removed.");
   }
 });
 
 function addMember(){
-  var v=$("newname").value.trim();
-  if(!v){toast("Enter a name first.");return}
-  if(S.members.some(function(m){return m.name.toLowerCase()===v.toLowerCase()})){toast(v+" is already on the list.");return}
-  var m={id:uid(),name:v,payments:[]};
-  S.members.push(m);open=m.id;armed=null;
-  $("newname").value="";save();render();toast("Added "+v+".");
-}
-$("addm").addEventListener("click",addMember);
-$("newname").addEventListener("keydown",function(e){if(e.key==="Enter")addMember()});
+  var v = $("newname").value.trim();
 
-$("tname").addEventListener("change",function(){S.name=this.value.trim()||"Tour fund";this.value=S.name;save()});
-$("perhead").addEventListener("change",function(){S.perHead=toP(this.value);this.value=S.perHead?S.perHead/100:"";save();render()});
-
-function summaryText(){
-  var head=S.perHead, L=[], c=0;
-  S.members.forEach(function(m){c+=paid(m)});
-  L.push(S.name,"Collected "+fmt(c)+" of "+fmt(head*S.members.length),"");
-  S.members.forEach(function(m){
-    var p=paid(m), due=Math.max(0,head-p);
-    L.push((head>0&&p>=head?"[paid] ":"[due ] ")+m.name+" - "+fmt(p)+(due>0?" (pending "+fmt(due)+")":""));
-  });
-  return L.join("\n");
-}
-function copyText(t,okMsg){
-  function fallback(){
-    try{var ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";
-      document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");document.body.removeChild(ta);
-      toast(ok?okMsg:"Copy failed. Select and copy manually.")}catch(e){toast("Copy failed.")}
+  if(!v){
+    toast("Enter a name first.");
+    return;
   }
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(t).then(function(){toast(okMsg)},fallback);
-  }else fallback();
+
+  if(S.members.some(function(m){
+    return m.name.toLowerCase() === v.toLowerCase();
+  })){
+    toast(v + " is already on the list.");
+    return;
+  }
+
+  var m = {
+    id:uid(),
+    name:v,
+    payments:[]
+  };
+
+  S.members.push(m);
+  open = m.id;
+  armed = null;
+
+  $("newname").value = "";
+  save();
+  render();
+  toast("Added " + v + ".");
 }
-$("copy").addEventListener("click",function(){copyText(summaryText(),"Summary copied.")});
-$("reset").addEventListener("click",function(){
-  if(this.dataset.armed!=="1"){this.dataset.armed="1";this.textContent="Tap again to erase everything";return}
-  S={name:"Tour fund",perHead:0,members:[]};open=null;armed=null;save();
-  this.dataset.armed="";this.textContent="Clear all data";init();toast("All data cleared.");
+
+$("addm").addEventListener("click", addMember);
+
+$("newname").addEventListener("keydown", function(e){
+  if(e.key === "Enter") addMember();
 });
 
-/* ---------- JSON import / export (amounts in rupees in JSON) ---------- */
-var impArmed=false;
-function resetArm(){impArmed=false;$("imp").textContent="Import"}
-function mode(){return document.querySelector('input[name="mode"]:checked').value}
-function clean(s,n){return String(s==null?"":s).trim().slice(0,n)}
-function validDate(d){return typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d)?d:today()}
-function pkey(p){return p.amt+"|"+p.date+"|"+p.note}
+$("tname").addEventListener("change", function(){
+  S.name = this.value.trim() || "Fund Collector";
+  this.value = S.name;
+  save();
+});
 
-// Accepts: [members] or {name, perHead, members:[...]}.
-// Member: "Name" | {name, paid, payments:[number | {amount, date, note}]}
+$("perhead").addEventListener("change", function(){
+  S.perHead = toP(this.value);
+  this.value = S.perHead ? S.perHead / 100 : "";
+  save();
+  render();
+});
+
+function summaryText(){
+  var head = S.perHead;
+  var L = [];
+  var c = 0;
+
+  S.members.forEach(function(m){
+    c += paid(m);
+  });
+
+  L.push(
+    S.name,
+    "Collected " + fmt(c) + " of " + fmt(head * S.members.length),
+    ""
+  );
+
+  S.members.forEach(function(m){
+    var p = paid(m);
+    var due = Math.max(0, head - p);
+
+    L.push(
+      (head > 0 && p >= head ? "[paid] " : "[due ] ") +
+      m.name + " - " + fmt(p) +
+      (due > 0 ? " (pending " + fmt(due) + ")" : "")
+    );
+  });
+
+  return L.join("\n");
+}
+
+function copyText(t, okMsg){
+  function fallback(){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = t;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+
+      toast(ok ? okMsg : "Copy failed. Select and copy manually.");
+    }catch(e){
+      toast("Copy failed.");
+    }
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){
+      toast(okMsg);
+    }, fallback);
+  }else{
+    fallback();
+  }
+}
+
+$("copy").addEventListener("click", function(){
+  copyText(summaryText(), "Summary copied.");
+});
+
+$("reset").addEventListener("click", function(){
+  if(this.dataset.armed !== "1"){
+    this.dataset.armed = "1";
+    this.textContent = "Tap again to erase everything";
+    return;
+  }
+
+  S = {
+    name:"Fund Collector",
+    perHead:0,
+    members:[]
+  };
+
+  open = null;
+  armed = null;
+  save();
+
+  this.dataset.armed = "";
+  this.textContent = "Clear all data";
+
+  init();
+  toast("All data cleared.");
+});
+
+/* ---------- JSON import / export ---------- */
+
+var impArmed = false;
+
+function resetArm(){
+  impArmed = false;
+  $("imp").textContent = "Import";
+}
+
+function mode(){
+  return document.querySelector('input[name="mode"]:checked').value;
+}
+
+function clean(s,n){
+  return String(s == null ? "" : s).trim().slice(0,n);
+}
+
+function validDate(d){
+  return typeof d === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : today();
+}
+
+function pkey(p){
+  return p.amt + "|" + p.date + "|" + p.note;
+}
+
+// Accepted formats:
+// [members]
+// {name, perHead, members:[...]}
+// Member: "Name" | {name, paid, payments:[number | {amount,date,note}]}
+
 function parseImport(text){
   var data;
-  try{data=JSON.parse(text)}catch(e){throw new Error("Invalid JSON: "+e.message)}
-  var isArr=Array.isArray(data);
-  var list=isArr?data:(data&&Array.isArray(data.members)?data.members:null);
-  if(!list)throw new Error('Expected a list of members or an object with a "members" list.');
-  var out={name:null,perHead:null,members:[],skipped:0};
-  if(!isArr){
-    if(typeof data.name==="string"&&data.name.trim())out.name=clean(data.name,60);
-    var ph=toP(data.perHead);if(ph)out.perHead=ph;
+
+  try{
+    data = JSON.parse(text);
+  }catch(e){
+    throw new Error("Invalid JSON: " + e.message);
   }
+
+  var isArr = Array.isArray(data);
+  var list = isArr
+    ? data
+    : data && Array.isArray(data.members)
+      ? data.members
+      : null;
+
+  if(!list){
+    throw new Error(
+      'Expected a list of members or an object with a "members" list.'
+    );
+  }
+
+  var out = {
+    name:null,
+    perHead:null,
+    members:[],
+    skipped:0
+  };
+
+  if(!isArr){
+    if(typeof data.name === "string" && data.name.trim()){
+      out.name = clean(data.name,60);
+    }
+
+    var ph = toP(data.perHead);
+    if(ph) out.perHead = ph;
+  }
+
   list.forEach(function(it){
-    if(typeof it==="string")it={name:it};
-    if(!it||typeof it!=="object"){out.skipped++;return}
-    var name=clean(it.name,60);
-    if(!name){out.skipped++;return}
-    var pays=[];
-    if(Array.isArray(it.payments))it.payments.forEach(function(p){
-      if(typeof p==="number"||typeof p==="string")p={amount:p};
-      var a=p&&typeof p==="object"?toP(p.amount!=null?p.amount:p.amt):0;
-      if(!a){out.skipped++;return}
-      pays.push({id:uid(),amt:a,date:validDate(p.date),note:clean(p.note,80)});
+    if(typeof it === "string") it = {name:it};
+
+    if(!it || typeof it !== "object"){
+      out.skipped++;
+      return;
+    }
+
+    var name = clean(it.name,60);
+
+    if(!name){
+      out.skipped++;
+      return;
+    }
+
+    var pays = [];
+
+    if(Array.isArray(it.payments)){
+      it.payments.forEach(function(p){
+        if(typeof p === "number" || typeof p === "string"){
+          p = {amount:p};
+        }
+
+        var a = p && typeof p === "object"
+          ? toP(p.amount != null ? p.amount : p.amt)
+          : 0;
+
+        if(!a){
+          out.skipped++;
+          return;
+        }
+
+        pays.push({
+          id:uid(),
+          amt:a,
+          date:validDate(p.date),
+          note:clean(p.note,80)
+        });
+      });
+    }
+
+    var quick = toP(it.paid);
+
+    if(quick){
+      pays.push({
+        id:uid(),
+        amt:quick,
+        date:today(),
+        note:"Imported"
+      });
+    }
+
+    out.members.push({
+      name:name,
+      payments:pays
     });
-    var quick=toP(it.paid);
-    if(quick)pays.push({id:uid(),amt:quick,date:today(),note:"Imported"});
-    out.members.push({name:name,payments:pays});
   });
-  if(!out.members.length)throw new Error("No valid members found.");
+
+  if(!out.members.length){
+    throw new Error("No valid members found.");
+  }
+
   return out;
 }
 
-function applyImport(imp,replace){
-  var pre={};
-  if(replace)S.members=[];
-  else S.members.forEach(function(m){pre[m.id]=m.payments.map(pkey)});
-  if(imp.name&&(replace||S.name==="Tour fund"))S.name=imp.name;
-  if(imp.perHead&&(replace||!S.perHead))S.perHead=imp.perHead;
-  var addedM=0,addedP=0,dup=0;
+function applyImport(imp, replace){
+  var pre = {};
+
+  if(replace){
+    S.members = [];
+  }else{
+    S.members.forEach(function(m){
+      pre[m.id] = m.payments.map(pkey);
+    });
+  }
+
+  if(imp.name && (replace || S.name === "Fund Collector")){
+    S.name = imp.name;
+  }
+
+  if(imp.perHead && (replace || !S.perHead)){
+    S.perHead = imp.perHead;
+  }
+
+  var addedM = 0;
+  var addedP = 0;
+  var dup = 0;
+
   imp.members.forEach(function(im){
-    var m=S.members.filter(function(x){return x.name.toLowerCase()===im.name.toLowerCase()})[0];
-    if(!m){m={id:uid(),name:im.name,payments:[]};S.members.push(m);addedM++}
+    var m = S.members.filter(function(x){
+      return x.name.toLowerCase() === im.name.toLowerCase();
+    })[0];
+
+    if(!m){
+      m = {
+        id:uid(),
+        name:im.name,
+        payments:[]
+      };
+
+      S.members.push(m);
+      addedM++;
+    }
+
     im.payments.forEach(function(p){
-      // Skip payments already present before this import (safe to re-import the same JSON).
-      if(pre[m.id]&&pre[m.id].indexOf(pkey(p))>-1){dup++;return}
-      m.payments.push(p);addedP++;
+      if(pre[m.id] && pre[m.id].indexOf(pkey(p)) > -1){
+        dup++;
+        return;
+      }
+
+      m.payments.push(p);
+      addedP++;
     });
   });
-  open=null;armed=null;save();init();
-  return {addedM:addedM,addedP:addedP,dup:dup};
+
+  open = null;
+  armed = null;
+  save();
+  init();
+
+  return {
+    addedM:addedM,
+    addedP:addedP,
+    dup:dup
+  };
 }
 
-$("imp").addEventListener("click",function(){
-  var text=$("json").value.trim();
-  if(!text){toast("Paste JSON or choose a file first.");return}
-  var imp;
-  try{imp=parseImport(text)}catch(e){resetArm();toast(e.message);return}
-  var replace=mode()==="replace";
-  if(replace&&S.members.length&&!impArmed){
-    impArmed=true;this.textContent="Tap again: remove all & import";
-    toast("This deletes the current "+S.members.length+" members first.");return;
+$("imp").addEventListener("click", function(){
+  var text = $("json").value.trim();
+
+  if(!text){
+    toast("Paste JSON or choose a file first.");
+    return;
   }
-  var r=applyImport(imp,replace);
-  resetArm();$("json").value="";
-  toast((replace?"List replaced. ":"")+"Added "+r.addedM+" members, "+r.addedP+" payments"+
-    (r.dup?", "+r.dup+" duplicate payments skipped":"")+(imp.skipped?", "+imp.skipped+" invalid entries ignored":"")+".");
-});
-$("json").addEventListener("input",resetArm);
-Array.prototype.forEach.call(document.querySelectorAll('input[name="mode"]'),function(r){r.addEventListener("change",resetArm)});
 
-$("file").addEventListener("change",function(){
-  var f=this.files&&this.files[0];if(!f)return;
-  if(f.size>2000000){toast("File too large (max 2 MB).");this.value="";return}
-  var rd=new FileReader();
-  rd.onload=function(){$("json").value=String(rd.result);resetArm();toast("File loaded. Pick an option and tap Import.")};
-  rd.onerror=function(){toast("Could not read the file.")};
-  rd.readAsText(f);this.value="";
+  var imp;
+
+  try{
+    imp = parseImport(text);
+  }catch(e){
+    resetArm();
+    toast(e.message);
+    return;
+  }
+
+  var replace = mode() === "replace";
+
+  if(replace && S.members.length && !impArmed){
+    impArmed = true;
+    this.textContent = "Tap again: remove all & import";
+    toast("This deletes the current " + S.members.length + " members first.");
+    return;
+  }
+
+  var r = applyImport(imp,replace);
+
+  resetArm();
+  $("json").value = "";
+
+  toast(
+    (replace ? "List replaced. " : "") +
+    "Added " + r.addedM + " members, " + r.addedP + " payments" +
+    (r.dup ? ", " + r.dup + " duplicate payments skipped" : "") +
+    (imp.skipped ? ", " + imp.skipped + " invalid entries ignored" : "") +
+    "."
+  );
 });
 
-$("sample").addEventListener("click",function(){
-  $("json").value=JSON.stringify({name:"Goa Trip",perHead:5000,members:[
-    {name:"Amit",payments:[{amount:2000,date:today(),note:"UPI"}]},
-    {name:"Riya",paid:5000},
-    {name:"Sam"}]},null,2);
+$("json").addEventListener("input", resetArm);
+
+Array.prototype.forEach.call(
+  document.querySelectorAll('input[name="mode"]'),
+  function(r){
+    r.addEventListener("change", resetArm);
+  }
+);
+
+$("file").addEventListener("change", function(){
+  var f = this.files && this.files[0];
+  if(!f) return;
+
+  if(f.size > 2000000){
+    toast("File too large (max 2 MB).");
+    this.value = "";
+    return;
+  }
+
+  var rd = new FileReader();
+
+  rd.onload = function(){
+    $("json").value = String(rd.result);
+    resetArm();
+    toast("File loaded. Pick an option and tap Import.");
+  };
+
+  rd.onerror = function(){
+    toast("Could not read the file.");
+  };
+
+  rd.readAsText(f);
+  this.value = "";
+});
+
+$("sample").addEventListener("click", function(){
+  $("json").value = JSON.stringify({
+    name:"Fund Collector",
+    perHead:5000,
+    members:[
+      {
+        name:"Amit",
+        payments:[
+          {amount:2000,date:today(),note:"UPI"}
+        ]
+      },
+      {name:"Riya",paid:5000},
+      {name:"Sam"}
+    ]
+  }, null, 2);
+
   resetArm();
 });
-$("exp").addEventListener("click",function(){
-  var data={name:S.name,perHead:S.perHead/100,members:S.members.map(function(m){
-    return {name:m.name,payments:m.payments.map(function(p){return {amount:p.amt/100,date:p.date,note:p.note}})}})};
-  var t=JSON.stringify(data,null,2);
-  $("json").value=t;resetArm();
+
+$("exp").addEventListener("click", function(){
+  var data = {
+    name:S.name,
+    perHead:S.perHead / 100,
+    members:S.members.map(function(m){
+      return {
+        name:m.name,
+        payments:m.payments.map(function(p){
+          return {
+            amount:p.amt / 100,
+            date:p.date,
+            note:p.note
+          };
+        })
+      };
+    })
+  };
+
+  var t = JSON.stringify(data,null,2);
+
+  $("json").value = t;
+  resetArm();
   copyText(t,"JSON shown in the box above and copied.");
 });
 
-$("showjson").addEventListener("click",function(){
-  var box=$("jsonbox"),show=box.hidden;
-  box.hidden=!show;
-  this.textContent=show?"Hide JSON":"Show JSON";
+$("showjson").addEventListener("click", function(){
+  var box = $("jsonbox");
+  var show = box.hidden;
+
+  box.hidden = !show;
+  this.textContent = show ? "Hide JSON" : "Show JSON";
   this.setAttribute("aria-expanded",String(show));
-  if(show)box.scrollIntoView({behavior:"smooth",block:"nearest"});
+
+  if(show){
+    box.scrollIntoView({
+      behavior:"smooth",
+      block:"nearest"
+    });
+  }
 });
 
 function init(){
-  $("tname").value=S.name;
-  $("perhead").value=S.perHead?S.perHead/100:"";
+  $("tname").value = S.name;
+  $("perhead").value = S.perHead ? S.perHead / 100 : "";
   render();
 }
+
 init();
+
 })();
 </script>
 </body>
